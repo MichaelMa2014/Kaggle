@@ -182,7 +182,4 @@ Temporary Items
 .apdisk
 
 .idea/
-temp/
-sogou/data/user_tag_query.2W.*
-electricity/data/*.csv
-*.csv
+Data/
