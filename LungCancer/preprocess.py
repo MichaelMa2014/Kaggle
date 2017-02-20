@@ -30,6 +30,15 @@ def load_scan(path):
     for s in slices:
         s.SliceThickness = slice_thickness
 
+    return slices
+
+
+def slices_to_pixel(slices):
+    """
+    Convert scan slices of a patient to np array of HU values
+    :param scan:
+    :return:
+    """
     # np.array() should also work
     image = np.stack([s.pixel_array for s in slices])
     # Convert to int16 (from sometimes int16),
@@ -56,16 +65,16 @@ def load_scan(path):
     return np.array(image, dtype=np.int16)
 
 
-def plot_3d(patient_scan, threshold=-300):
+def plot_3d(pixel, threshold=-300):
     """
-    Visualize all scans from a patient as a 3D image
-    :param patient_scan: np array of HU values of the patient
+    Visualize all scan slices from a patient as a 3D image
+    :param pixel: np array of HU values of the patient
     :param threshold: threshold for marching_cubes
     :return: No return. A plot was shown
     """
     # Position the scan upright,
     # so the head of the patient would be at the top facing the camera
-    p = patient_scan.transpose(2, 1, 0)
+    p = pixel.transpose(2, 1, 0)
 
     verts, faces = measure.marching_cubes(p, threshold)
 
@@ -82,4 +91,21 @@ def plot_3d(patient_scan, threshold=-300):
     ax.set_ylim(0, p.shape[1])
     ax.set_zlim(0, p.shape[2])
 
-    plt.show()
+    fig.savefig('/Users/MichaelMa/Downloads/' + str(pixel.shape))
+
+
+def resample(pixel, slices, new_spacing=[1, 1, 1]):
+    """
+    Use spline interpolation to resample the pixels so that spacing on 3 directions is equal
+    :param pixel: np array of HU values of the patient
+    :param slices: array of scan slices from the patient
+    :param new_spacing:
+    :return: resampled np array of HU values of the patient and actual new spacing
+    """
+    spacing = np.array([slices[0].SliceThickness] + slices[0].PixelSpacing, dtype=np.float32)
+    resize_factor = spacing / new_spacing
+    actual_resize_factor = np.round(pixel.shape * resize_factor) / pixel.shape
+
+    new_pixel = scipy.ndimage.interpolation.zoom(pixel, actual_resize_factor, mode='nearest')
+    actual_new_spacing = spacing / actual_resize_factor
+    return new_pixel, actual_new_spacing
