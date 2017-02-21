@@ -90,8 +90,9 @@ def plot_3d(pixel, threshold=-300):
     ax.set_xlim(0, p.shape[0])
     ax.set_ylim(0, p.shape[1])
     ax.set_zlim(0, p.shape[2])
-
-    fig.savefig('/Users/MichaelMa/Downloads/' + str(pixel.shape))
+    
+    plt.show()
+    # fig.savefig('/Users/MichaelMa/Downloads/' + str(pixel.shape))
 
 
 def resample(pixel, slices, new_spacing=[1, 1, 1]):
