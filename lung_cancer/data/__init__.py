@@ -1,34 +1,54 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import generators
+from __future__ import nested_scopes
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import with_statement
+
+import numpy as np  # linear algebra
+import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import dicom
 import os
 import scipy.ndimage
+import time
+import matplotlib
+matplotlib.use('svg')
+
 import matplotlib.pyplot as plt
 
 from skimage import measure, morphology
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
-def load_scan(path):
+def load_slices(path):
     """
     Load the scans in given folder, each folder contains all scans from a patient
     :param path:
     :return: np array of HU values of the patient
     """
     slices = [dicom.read_file(path + '/' + s) for s in os.listdir(path)]
-    slices.sort(key = lambda x: int(x.ImagePositionPatient[2]))
+    slices.sort(key=lambda x: int(x.ImagePositionPatient[2]))
 
-    # This works because of DICOM definiion
+    # This works because of DICOM definition
     try:
         slice_thickness = np.abs(slices[0].ImagePositionPatient[2] - slices[1].ImagePositionPatient[2])
-    except:
+    except KeyError:
         slice_thickness = np.abs(slices[0].SliceLocation - slices[1].SliceLocation)
+
+    labels_df = pd.read_csv('./data/stage1_labels.csv')
+    label = None
+    try:
+        label = labels_df.get_value(slices[0].PatientID, 'cancer')
+    except KeyError:
+        print()
 
     # Slick thickness is important in later resampling
     for s in slices:
         s.SliceThickness = slice_thickness
+        s.Cancer = label
 
     return slices
 
@@ -36,8 +56,8 @@ def load_scan(path):
 def slices_to_pixel(slices):
     """
     Convert scan slices of a patient to np array of HU values
-    :param scan:
-    :return:
+    :param slices:
+    :return: np array
     """
     # np.array() should also work
     image = np.stack([s.pixel_array for s in slices])
@@ -91,10 +111,10 @@ def plot_3d(pixel, threshold=-300):
     ax.set_ylim(0, p.shape[1])
     ax.set_zlim(0, p.shape[2])
 
-    fig.savefig('/Users/MichaelMa/Downloads/' + str(pixel.shape))
+    fig.savefig(str(int(time.time()) % 100) + str(pixel.shape) + 'threshold=' + str(threshold))
 
 
-def resample(pixel, slices, new_spacing=[1, 1, 1]):
+def resample(pixel, slices, new_spacing=(1, 1, 1)):
     """
     Use spline interpolation to resample the pixels so that spacing on 3 directions is equal
     :param pixel: np array of HU values of the patient

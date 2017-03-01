@@ -181,5 +181,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-.idea/
-/LungCancer/Data/
+/lung_cancer/data/stage1
+/lung_cancer/data/subset0
