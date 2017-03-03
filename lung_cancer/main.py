@@ -8,20 +8,38 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
 
-import os
-import data
+import lung_cancer
+from lung_cancer import listdir_no_hidden
+import preprocess as pre
+import audit
+
+PATH = lung_cancer.PATH
 
 
 def main():
-    input_folder = './data/stage1/'
-    patients = os.listdir(input_folder)
+    input_folder = PATH + '/data/stage1/'
+    patients = listdir_no_hidden(input_folder)
     patients.sort()
-    first_patient_slices = data.load_slices(input_folder + patients[1])
-    first_patient_pixel = data.slices_to_pixel(first_patient_slices)
-    data.plot_3d(first_patient_pixel, 400)
-    first_patient_pixel_resampled, new_spacing = data.resample(first_patient_pixel, first_patient_slices, [5, 5, 5])
-    data.plot_3d(first_patient_pixel_resampled, 400)
+
+    # audit.folder_name_equals_id()
+
+    # first_path = input_folder + patients[0]
+    # first_slices = pre.load_slices(first_path)
+    # first_pixel = pre.slices_to_pixel(first_slices)
+    # first_pixel_resampled, new_spacing = pre.resample(first_pixel, first_slices, [5, 5, 5])
+    # pre.plot_3d(first_pixel, 400)
+    # pre.plot_3d(first_pixel_resampled, 400)
+    # pre.plot_3d(first_pixel, 0)
+    # pre.plot_3d(first_pixel_resampled, 0)
+
+    # first_pixel = pre.load_pixel(first_path)
+    # print(first_pixel.shape)
+
+    # for patient in patients:
+    #     path = input_folder + patient
+    #     pixel = pre.load_pixel(path)
+    #     print(pixel.shape)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
