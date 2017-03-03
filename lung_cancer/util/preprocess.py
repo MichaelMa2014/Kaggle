@@ -15,7 +15,6 @@ import platform
 import dicom
 import matplotlib
 import numpy as np  # linear algebra
-import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import scipy.ndimage
 
 if platform.system().find('Darwin') != -1:
@@ -46,17 +45,9 @@ def load_slices(path):
     except KeyError:
         slice_thickness = np.abs(slices[0].SliceLocation - slices[1].SliceLocation)
 
-    labels_df = pd.read_csv('./data/stage1_labels.csv')
-    label = None
-    try:
-        label = labels_df.get_value(slices[0].PatientID, 'cancer')
-    except KeyError:
-        print('Label undefined for patient %s' % slices[0].PatientID)
-
     # Slick thickness is important in later resampling
     for s in slices:
         s.SliceThickness = slice_thickness
-        s.Cancer = label
 
     return slices
 
