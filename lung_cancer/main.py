@@ -8,12 +8,9 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
 
-import lung_cancer
-from lung_cancer import listdir_no_hidden
-import preprocess as pre
-import audit
+import util.preprocess as pre
 
-PATH = lung_cancer.PATH
+from util import PATH, listdir_no_hidden
 
 
 def main():
@@ -35,10 +32,10 @@ def main():
     # first_pixel = pre.load_pixel(first_path)
     # print(first_pixel.shape)
 
-    # for patient in patients:
-    #     path = input_folder + patient
-    #     pixel = pre.load_pixel(path)
-    #     print(pixel.shape)
+    for patient in patients:
+        path = input_folder + patient
+        pixel = pre.load_pixel(path)
+        print(pixel.shape)
 
 
 if __name__ == "__main__":

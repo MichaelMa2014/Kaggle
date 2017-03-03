@@ -7,11 +7,12 @@ from __future__ import nested_scopes
 from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
+
 import dicom
 
-import lung_cancer
-from lung_cancer import listdir_no_hidden
-DATA_PATH = lung_cancer.PATH + '/data/stage1'
+from util import PATH, listdir_no_hidden
+
+DATA_PATH = PATH + '/data/stage1'
 
 
 def folder_name_equals_id():

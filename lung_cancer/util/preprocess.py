@@ -8,22 +8,23 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
 
+import os
+import time
+
+import dicom
+import matplotlib
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
-import dicom
-import os
 import scipy.ndimage
-import time
-import matplotlib
+
 matplotlib.use('macosx')
 
 import matplotlib.pyplot as plt
 
-from skimage import measure, morphology
+from skimage import measure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-import lung_cancer
-PATH = lung_cancer.PATH
+from util import PATH
 
 
 def load_slices(path):
