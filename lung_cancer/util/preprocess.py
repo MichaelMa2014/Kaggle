@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 from skimage import measure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-from util import PATH
+from util import INPUT_PATH, OUTPUT_PATH
 
 
 def load_slices(path):
@@ -127,7 +127,7 @@ def plot_3d(pixel, threshold=-300):
     ax.set_ylim(0, p.shape[1])
     ax.set_zlim(0, p.shape[2])
 
-    path = PATH + 'data/' + str(int(time.time() * 100) % 100) + str(pixel.shape) + 'threshold=' + str(threshold)
+    path = OUTPUT_PATH + '/' + str(int(time.time() * 100) % 100) + str(pixel.shape) + 'threshold=' + str(threshold)
     fig.savefig(path)
     print('figure saved to ' + path)
 
@@ -147,3 +147,10 @@ def resample(pixel, slices, new_spacing=(1, 1, 1)):
     new_pixel = scipy.ndimage.interpolation.zoom(pixel, actual_resize_factor, mode='nearest')
     actual_new_spacing = spacing / actual_resize_factor
     return new_pixel, actual_new_spacing
+
+
+def dcm_to_npy(patients):
+    for patient in patients:
+        path = INPUT_PATH + '/' + patient
+        pixel = load_pixel(path)
+        print('%s scan shape' % patient, pixel.shape)

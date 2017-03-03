@@ -11,6 +11,9 @@ import os
 
 PATH = os.path.dirname(__file__)
 PATH = os.path.dirname(PATH)
+INPUT_PATH = PATH + '/data/stage1'
+OUTPUT_PATH = PATH + '/data'
+PROCESS_NUM = 12
 
 
 def listdir_no_hidden(path):
