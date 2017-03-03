@@ -10,6 +10,7 @@ from __future__ import with_statement
 
 import os
 import time
+import platform
 
 import dicom
 import matplotlib
@@ -17,7 +18,10 @@ import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import scipy.ndimage
 
-matplotlib.use('macosx')
+if platform.system().find('Darwin') != -1:
+    matplotlib.use('macosx')
+else:
+    matplotlib.use('agg')
 
 import matplotlib.pyplot as plt
 
