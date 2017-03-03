@@ -10,6 +10,7 @@ from __future__ import with_statement
 import os
 
 PATH = os.path.dirname(__file__)
+PATH = os.path.dirname(PATH)
 
 
 def listdir_no_hidden(path):
