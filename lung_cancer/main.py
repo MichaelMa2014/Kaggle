@@ -39,9 +39,12 @@ def main():
         path = input_folder + patient
         pixel = pre.load_pixel(path)
 
-        label = labels[labels.id == patient].iloc[0, 1]
-        print('%s is %s' % (patient, 'healthy' if label == 0 else 'cancerous'))
         print('%s scan shape' % patient, pixel.shape)
+        try:
+            label = labels[labels.id == patient].iloc[0, 1]
+            print('%s is %s' % (patient, 'healthy' if label == 0 else 'cancerous'))
+        except IndexError:
+            print('%s is %s' % (patient, 'unknown'))
 
 
 if __name__ == "__main__":
