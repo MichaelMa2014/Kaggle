@@ -92,11 +92,11 @@ def load_pixel(path):
     """
     patient_id = path.split('/')[-1]
     if not os.path.exists(path + '/' + patient_id + '.npy'):
-        scans = slices_to_pixel(load_slices(path))
-        np.save(path + '/' + patient_id, scans)
+        pixel = slices_to_pixel(load_slices(path))
+        np.save(path + '/' + patient_id, pixel)
     else:
-        scans = np.load(path + '/' + patient_id + '.npy')
-    return scans
+        pixel = np.load(path + '/' + patient_id + '.npy')
+    return pixel
 
 
 def plot_3d(pixel, threshold=-300):
@@ -152,5 +152,7 @@ def resample(pixel, slices, new_spacing=(1, 1, 1)):
 def dcm_to_npy(patients):
     for patient in patients:
         path = INPUT_PATH + '/' + patient
-        pixel = load_pixel(path)
-        print('%s scan shape' % patient, pixel.shape)
+        if not os.path.exists(path + '/' + patient + '.npy'):
+            pixel = slices_to_pixel(load_slices(path))
+            np.save(path + '/' + patient, pixel)
+            print('%s scan shape' % patient, pixel.shape)
