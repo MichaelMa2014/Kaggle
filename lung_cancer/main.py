@@ -13,17 +13,15 @@ import platform
 
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import numpy as np
+from sklearn.cluster import KMeans
 import matplotlib
 
-if platform.system().find('Darwin') != -1:
-    matplotlib.use('macosx')
-else:
-    matplotlib.use('agg')
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 import util.preprocess as pre
 import util.audit as audit
-from util import INPUT_PATH, PROCESS_NUM, listdir_no_hidden
+from util import INPUT_PATH, OUTPUT_PATH, PROCESS_NUM, listdir_no_hidden
 
 
 def main():
@@ -32,21 +30,40 @@ def main():
 
     # audit.folder_name_equals_id()
     # audit.slice_size_is_512_by_512()
-    audit.slope_and_intercept_consistent()
+    # audit.slope_and_intercept_consistent()
 
-    # first_path = INPUT_PATH + '/' + patients[0]
-    # first_slice = pre.load_pixel(first_path)[0]
-    # mean = np.mean(first_slice)
-    # std = np.std(first_slice)
-    # min = np.min(first_slice)
-    # max = np.max(first_slice)
-    # first_slice[first_slice == min] = mean
-    # first_slice[first_slice == max] = mean
-    # first_slice = (first_slice - mean) / std
-    # fig, ax = plt.subplots()
-    # ax.imshow(first_slice, cmap='gray')
-    # plt.hist(first_pixel.flatten(), bins=200)
-    # plt.show()
+    first_patient = patients[1]
+    first_path = INPUT_PATH + '/' + first_patient
+    slices = pre.load_pixel(first_path)
+    for i in range(0, len(slices)):
+        first_slice = slices[i]
+        fig, ax = plt.subplots(2, 2)
+
+        middle = np.reshape(first_slice[100:400, 100:400], [-1, 1])
+        kmeans = KMeans(n_clusters=2).fit(middle)
+        threshold = np.mean(kmeans.cluster_centers_)
+        cax = ax[0, 0].imshow(first_slice)
+        fig.colorbar(cax, ax=ax[0, 0])
+        ax[0, 1].imshow(np.where(first_slice < threshold, 0, 1))
+
+        mean = np.mean(first_slice)
+        std = np.std(first_slice)
+        min = np.min(first_slice)
+        max = np.max(first_slice)
+        first_slice[first_slice == min] = mean
+        first_slice[first_slice == max] = mean
+        first_slice = (first_slice - mean) / std
+
+        middle = np.reshape(first_slice[100:400, 100:400], [-1, 1])
+        kmeans = KMeans(n_clusters=2).fit(middle)
+        threshold = np.mean(kmeans.cluster_centers_)
+        cax = ax[1, 0].imshow(first_slice)
+        fig.colorbar(cax, ax=ax[1, 0])
+        ax[1, 1].imshow(np.where(first_slice < threshold, 0, 1))
+
+        plt.savefig(OUTPUT_PATH + '/%s_%s' % (first_patient, i))
+        # plt.show()
+
     # first_pixel_resampled, new_spacing = pre.resample(first_pixel, first_slices, [5, 5, 5])
     # pre.plot_3d(first_pixel, 400)
     # pre.plot_3d(first_pixel_resampled, 400)

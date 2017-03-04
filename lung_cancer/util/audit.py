@@ -45,6 +45,10 @@ def slice_size_is_512_by_512():
 
 
 def slope_and_intercept_consistent():
+    """
+    Rejected for stage1, see details at slope_and_intercept.txt
+    :return:
+    """
     consistent_all = True
     slope_all = None
     intercept_all = None
