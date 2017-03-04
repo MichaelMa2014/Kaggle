@@ -17,4 +17,5 @@ PROCESS_NUM = 12
 
 
 def listdir_no_hidden(path):
-    return [f for f in os.listdir(path) if not f.startswith('.')]
+    #  Use sorted for more predicative behaviour
+    return sorted([f for f in os.listdir(path) if not f.startswith('.')])

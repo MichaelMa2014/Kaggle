@@ -56,10 +56,11 @@ def slope_and_intercept_consistent():
         slope = slices[0].RescaleSlope
         intercept = slices[0].RescaleIntercept
         if slope_all is None and intercept_all is None:
+            print('%s is the first patient: %s, %s' % (patient, slope, intercept))
             slope_all = slope
             intercept_all = intercept
         elif not slope == slope_all or not intercept == intercept_all:
-            print('%s not consistent with the first patient' % patient)
+            print('%s not consistent with the first patient: %s, %s' % (patient, slope, intercept))
             consistent_all = False
         for i in range(len(slices)):
             if not slices[i].RescaleSlope == slope:
