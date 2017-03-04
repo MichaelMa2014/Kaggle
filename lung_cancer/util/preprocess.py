@@ -27,7 +27,7 @@ import matplotlib.pyplot as plt
 from skimage import measure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-from util import INPUT_PATH, OUTPUT_PATH
+from util import INPUT_PATH, OUTPUT_PATH, listdir_no_hidden
 
 
 def load_slices(path):
@@ -36,7 +36,10 @@ def load_slices(path):
     :param path:
     :return: np array of HU values of the patient
     """
-    slices = [dicom.read_file(path + '/' + s) for s in os.listdir(path)]
+    slices = []
+    for file_name in listdir_no_hidden(path):
+        if not file_name.endswith('.npy'):
+            slices.append(dicom.read_file(path + '/' + file_name))
     slices.sort(key=lambda x: int(x.ImagePositionPatient[2]))
 
     # This works because of DICOM definition

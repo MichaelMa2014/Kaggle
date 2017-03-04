@@ -10,6 +10,8 @@ from __future__ import with_statement
 
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import multiprocessing
+import matplotlib.pyplot as plt
+import numpy as np
 
 import util.preprocess as pre
 import util.audit as audit
@@ -22,10 +24,21 @@ def main():
 
     # audit.folder_name_equals_id()
     # audit.slice_size_is_512_by_512()
+    audit.slope_and_intercept_consistent()
 
-    # first_path = input_folder + patients[0]
-    # first_slices = pre.load_slices(first_path)
-    # first_pixel = pre.slices_to_pixel(first_slices)
+    # first_path = INPUT_PATH + '/' + patients[0]
+    # first_slice = pre.load_pixel(first_path)[0]
+    # mean = np.mean(first_slice)
+    # std = np.std(first_slice)
+    # min = np.min(first_slice)
+    # max = np.max(first_slice)
+    # first_slice[first_slice == min] = mean
+    # first_slice[first_slice == max] = mean
+    # first_slice = (first_slice - mean) / std
+    # fig, ax = plt.subplots()
+    # ax.imshow(first_slice, cmap='gray')
+    # plt.hist(first_pixel.flatten(), bins=200)
+    # plt.show()
     # first_pixel_resampled, new_spacing = pre.resample(first_pixel, first_slices, [5, 5, 5])
     # pre.plot_3d(first_pixel, 400)
     # pre.plot_3d(first_pixel_resampled, 400)
@@ -35,9 +48,9 @@ def main():
     # first_pixel = pre.load_pixel(first_path)
     # print(first_pixel.shape)
 
-    for i in range(PROCESS_NUM):
-        p = multiprocessing.Process(target=pre.dcm_to_npy, args=(patients[i::PROCESS_NUM],))
-        p.start()
+    # for i in range(PROCESS_NUM):
+    #     p = multiprocessing.Process(target=pre.dcm_to_npy, args=(patients[i::PROCESS_NUM],))
+    #     p.start()
 
     # labels = pd.read_csv(PATH + '/data/stage1_labels.csv')
     # for patient in patients:
