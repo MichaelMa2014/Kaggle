@@ -10,19 +10,11 @@ from __future__ import with_statement
 
 import os
 import time
-import platform
 
 import dicom
-import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
 import scipy.ndimage
-
-if platform.system().find('Darwin') != -1:
-    matplotlib.use('macosx')
-else:
-    matplotlib.use('agg')
-
-import matplotlib.pyplot as plt
 
 from skimage import measure
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection

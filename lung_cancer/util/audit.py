@@ -8,6 +8,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
 
+import sys
 import dicom
 
 from util import INPUT_PATH, listdir_no_hidden
@@ -48,6 +49,7 @@ def slope_and_intercept_consistent():
     slope_all = None
     intercept_all = None
     for patient in listdir_no_hidden(INPUT_PATH):
+        sys.stdout.flush()
         consistent = True
         path = INPUT_PATH + '/' + patient
         slices = pre.load_slices(path)
@@ -57,6 +59,7 @@ def slope_and_intercept_consistent():
             slope_all = slope
             intercept_all = intercept
         elif not slope == slope_all or not intercept == intercept_all:
+            print('%s not consistent with the first patient' % patient)
             consistent_all = False
         for i in range(len(slices)):
             if not slices[i].RescaleSlope == slope:

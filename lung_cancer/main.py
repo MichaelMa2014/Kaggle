@@ -8,10 +8,18 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
 
-import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import multiprocessing
-import matplotlib.pyplot as plt
+import platform
+
+import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import numpy as np
+import matplotlib
+
+if platform.system().find('Darwin') != -1:
+    matplotlib.use('macosx')
+else:
+    matplotlib.use('agg')
+import matplotlib.pyplot as plt
 
 import util.preprocess as pre
 import util.audit as audit
