@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 from __future__ import with_statement
 
 import os
+import sys
 import time
 
 import dicom
@@ -137,3 +138,4 @@ def dcm_to_npy(patients):
             pixel = slices_to_pixel(load_slices(path))
             np.save(path + '/' + patient, pixel)
             print('%s scan shape' % patient, pixel.shape)
+            sys.stdout.flush()
