@@ -48,7 +48,7 @@ def load_slices(path):
     return slices
 
 
-def slices_to_pixel(slices):
+def slices_to_pixels(slices):
     """
     Convert scan slices of a patient to np array of HU values
     :param slices:
@@ -66,19 +66,37 @@ def slices_to_pixel(slices):
     return image
 
 
-def load_pixel(path):
+def load_pixels_by_patient(patient):
     """
-    Load the pixel (np array) saved for this patient, if not found, try to construct the np array and save it
-    :param path: Load the scans in given folder, which contains all scans from a patient
+    Load the pixels (np array) saved for this patient, if not found, try to construct the np array and save it
+    :param patient: patient id
     :return:
     """
-    patient_id = path.split('/')[-1]
-    if not os.path.exists(path + '/' + patient_id + '.npy'):
-        pixel = slices_to_pixel(load_slices(path))
-        np.save(path + '/' + patient_id, pixel)
+    path = INPUT_PATH + '/' + patient
+    if not os.path.exists(path + '/' + patient + '.npy'):
+        pixels = slices_to_pixels(load_slices(path))
+        np.save(path + '/' + patient, pixels)
     else:
-        pixel = np.load(path + '/' + patient_id + '.npy')
-    return pixel
+        pixels = np.load(path + '/' + patient + '.npy')
+    return pixels
+
+
+def plot_2d(pixel, patient="Unknown", i=0):
+    """
+    Draw one pixel and save to OUTPUT_PATH
+    :param pixel: np array
+    :param patient: patient id for output
+    :param i: pixel id for output
+    :return:
+    """
+    fig, ax = plt.subplots(1, 1)
+
+    ax.axis('off')
+    ax.set_title('Original')
+    cax = ax.imshow(pixel)
+    fig.colorbar(cax, ax=ax)
+
+    fig.savefig(OUTPUT_PATH + '/%s_%s' % (patient, i), dpi=400)
 
 
 def plot_3d(pixel, threshold=-300):
@@ -94,10 +112,10 @@ def plot_3d(pixel, threshold=-300):
     # so the head of the patient would be at the top facing the camera
     p = pixel.transpose(2, 1, 0)
 
-    verts, faces = measure.marching_cubes(p, threshold)
+    vertex, faces = measure.marching_cubes(p, threshold)
 
-    # Fancy indexing: `verts[faces]` to generate a collection of triangles
-    mesh = Poly3DCollection(verts[faces], alpha=0.1)
+    # Fancy indexing: `vertex[faces]` to generate a collection of triangles
+    mesh = Poly3DCollection(vertex[faces], alpha=0.1)
     face_color = [0.5, 0.5, 1]
     mesh.set_facecolor(face_color)
 
@@ -126,7 +144,7 @@ def resample(pixel, slices, new_spacing=(1, 1, 1)):
     resize_factor = spacing / new_spacing
     actual_resize_factor = np.round(pixel.shape * resize_factor) / pixel.shape
 
-    new_pixel = scipy.ndimage.interpolation.zoom(pixel, actual_resize_factor, mode='nearest')
+    new_pixel = scipy.ndimage.interpolation.zoom(pixel, actual_resize_factor, mode='nearest'.encode('utf-8'))
     actual_new_spacing = spacing / actual_resize_factor
     return new_pixel, actual_new_spacing
 
@@ -135,7 +153,7 @@ def dcm_to_npy(patients):
     for patient in patients:
         path = INPUT_PATH + '/' + patient
         if not os.path.exists(path + '/' + patient + '.npy'):
-            pixel = slices_to_pixel(load_slices(path))
+            pixel = slices_to_pixels(load_slices(path))
             np.save(path + '/' + patient, pixel)
             print('%s scan shape' % patient, pixel.shape)
             sys.stdout.flush()

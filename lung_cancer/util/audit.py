@@ -37,7 +37,7 @@ def slice_size_is_512_by_512():
     """
     for patient in listdir_no_hidden(INPUT_PATH):
         path = INPUT_PATH + '/' + patient
-        pixel = pre.load_pixel(path)
+        pixel = pre.load_pixels_by_patient(path)
         if not pixel.shape[1] == 512 or not pixel.shape[2] == 512:
             print('%s slice size' % patient, pixel.shape)
             return False
