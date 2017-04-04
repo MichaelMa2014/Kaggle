@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np  # linear algebra
 import scipy.ndimage
 
-from skimage import measure
+from skimage import measure, segmentation, morphology, filters
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 from util import INPUT_PATH, OUTPUT_PATH, listdir_no_hidden
@@ -64,6 +64,40 @@ def slices_to_pixels(slices):
         intercept = slices[i].RescaleIntercept
         image[i] = slope * image[i].astype(np.float64) + intercept
     return image
+
+
+def segment(pixel):
+    """
+    Use 9 steps proposed by arnavkj95
+    """
+    binary = pixel < -400
+    binary = segmentation.clear_border(binary)
+    label = measure.label(binary)
+    areas = [r.area for r in measure.regionprops(label)]
+    areas.sort()
+    if len(areas) > 2:
+        for region in measure.regionprops(label):
+            if region.area < areas[-2]:
+                for coordinates in region.coords:
+                    label[coordinates[0], coordinates[1]] = 0
+    binary = label > 0
+    binary = morphology.binary_erosion(binary, morphology.disk(2))
+    binary = morphology.binary_closing(binary, morphology.disk(10))
+    edges = filters.roberts(binary)
+    binary = scipy.ndimage.binary_fill_holes(edges)
+    pixel[binary == 0] = 0
+    return pixel
+
+
+def load_segment_by_patient(patient):
+    """
+    Load the pixels for a patient and segment all of them
+    """
+    pixels = load_pixels_by_patient(patient)
+    segments = []
+    for pixel in pixels:
+        segments.append(segment(pixel))
+    return np.array(segments)
 
 
 def load_pixels_by_patient(patient):
