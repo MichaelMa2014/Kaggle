@@ -48,7 +48,7 @@ def train():
 
     for patient in patients:
         sys.stdout.flush()
-        if neg_count > 500 + pos_count and label[patient] == 0:
+        if neg_count > 500 + pos_count and labels[patient] == 0:
             _INFO("Too many negative pixels, skipping patient " + patient)
             continue
 
