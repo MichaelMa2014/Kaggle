@@ -8,6 +8,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import with_statement
 
+import sys
 import numpy as np
 import keras
 from keras.models import Sequential
@@ -64,6 +65,7 @@ def train():
     neg_count = 0
 
     for patient in patients:
+        sys.stdout.flush()
         if neg_count > 500 + pos_count and label[patient] == 0:
             _INFO("Too many negative pixels, skipping patient " + patient)
             continue
