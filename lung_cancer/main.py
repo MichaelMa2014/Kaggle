@@ -43,25 +43,8 @@ def main():
     #     p = multiprocessing.Process(target=fre.multi_load_diffs_by_patient, args=(patients[i::PROCESS_NUM],))
     #     p.start()
 
-    # model = cnn.classifier((512, 512, 1))
-    model = fft.fft((512, 257))
-    keras.utils.plot_model(model, to_file=OUTPUT_PATH + "/model.png", show_shapes=True)
-
-    for patient in patients:
-        segments = pre.load_segment_by_patient(patient)
-        # segments = np.expand_dims(segments, axis=3)
-        segments = np.fft.rfft2(segments)
-        segments = np.abs(segments)
-        _INFO(segments.shape)
-        label = labels[patient]
-        if label == 1:
-            label = np.array([0, 1])
-        else:
-            label = np.array([1, 0])
-        label = np.tile(label, (segments.shape[0], 1))
-        model.fit(segments, label, epochs=1, verbose=2)
-    # model.save(OUTPUT_PATH + "/cnn.h5")
-    model.save(OUTPUT_PATH + "/fft.h5")
+    cnn.train()
+    fft.train()
 
     # for i in range(PROCESS_NUM):
     #     p = multiprocessing.Process(target=fre.multi_detect_with_mask, args=(patients[i::PROCESS_NUM],))
