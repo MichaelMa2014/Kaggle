@@ -46,6 +46,10 @@ def train():
     neg_count = 0
 
     for patient in patients:
+        if neg_count > 500 + pos_count and label[patient] == 0:
+            _INFO("Too many negative pixels, skipping patient " + patient)
+            continue
+
         _INFO("fft dealing with patient " + patient)
         segments = pre.load_segment_by_patient(patient)
 
@@ -56,9 +60,6 @@ def train():
         else:
             label = np.array([1, 0])
             neg_count += segments.shape[0]
-        if neg_count > 500 + pos_count:
-            _INFO("Too many negative pixels, skipping patient " + patient)
-            continue
 
         label = np.tile(label, (segments.shape[0], 1))
 
