@@ -18,6 +18,7 @@ from keras.layers import Flatten, Dense, Activation
 import util.preprocess as pre
 from util import INPUT_PATH, OUTPUT_PATH, PROCESS_NUM, listdir_no_hidden, labels
 from util.log import _INFO, _ERROR
+from util.list import *
 
 
 def classifier(input_shape):
@@ -36,9 +37,8 @@ def train():
     Train and save FFT -> LR
     """
     _INFO("fft training started")
-    patients = listdir_no_hidden(INPUT_PATH)
-    patients.sort()
-    _INFO("Found %s patients" % len(patients))
+    patients = train_list()
+    _INFO("FFT found %s patients for training" % len(patients))
 
     model = classifier((512, 257))
     keras.utils.plot_model(model, to_file=OUTPUT_PATH + "/fft.png", show_shapes=True)

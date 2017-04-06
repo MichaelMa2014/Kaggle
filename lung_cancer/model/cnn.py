@@ -17,6 +17,7 @@ from keras.layers import Conv2D, MaxPooling2D, Activation, Dropout, Flatten, Den
 import util.preprocess as pre
 from util import INPUT_PATH, OUTPUT_PATH, PROCESS_NUM, listdir_no_hidden, labels
 from util.log import _INFO, _ERROR
+from util.list import *
 
 
 def classifier(input_shape, kernel_size=3, pool_size=2):
@@ -54,9 +55,8 @@ def train():
     Train and save 9 steps -> CNN
     """
     _INFO("cnn training started")
-    patients = listdir_no_hidden(INPUT_PATH)
-    patients.sort()
-    _INFO("Found %s patients" % len(patients))
+    patients = train_list()
+    _INFO("CNN found %s patients for training" % len(patients))
 
     model = classifier((512, 512, 1))
     keras.utils.plot_model(model, to_file=OUTPUT_PATH + "/cnn.png", show_shapes=True)
