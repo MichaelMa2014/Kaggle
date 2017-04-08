@@ -41,21 +41,21 @@ def main():
     #     p = multiprocessing.Process(target=fre.multi_load_diffs_by_patient, args=(patients[i::PROCESS_NUM],))
     #     p.start()
 
-    # cnn.train()
-    # fft.train()
-
     _INFO("Positive num: %s" % len(pos_list()))
     _INFO("Negative num: %s" % len(neg_list()))
     _INFO("Test num: %s" % len(test_list()))
 
-    model = keras.models.load_model(OUTPUT_PATH + '/cnn_balance.h5')
-    patients = test_list()
-    _INFO("Found %s patients" % len(patients))
-    for patient in patients:
-        segments = pre.load_segment_by_patient(patient)
-        segments = np.expand_dims(segments, axis=3)
-        ret = model.predict_on_batch(segments)
-        _INFO("Predict patient %s is %s" % (patient, np.mean(ret)))
+    cnn.train()
+    fft.train()
+
+    # model = keras.models.load_model(OUTPUT_PATH + '/cnn_balance.h5')
+    # patients = test_list()
+    # _INFO("Found %s patients" % len(patients))
+    # for patient in patients:
+        # segments = pre.load_segment_by_patient(patient)
+        # segments = np.expand_dims(segments, axis=3)
+        # ret = model.predict_on_batch(segments)
+        # _INFO("Predict patient %s is %s" % (patient, np.mean(ret)))
 
     # for i in range(PROCESS_NUM):
     #     p = multiprocessing.Process(target=fre.multi_detect_with_mask, args=(patients[i::PROCESS_NUM],))

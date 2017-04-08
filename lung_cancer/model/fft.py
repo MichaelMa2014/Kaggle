@@ -27,7 +27,7 @@ def classifier(input_shape):
     model.add(Flatten(input_shape=input_shape))
     model.add(Dense(2, activation="softmax"))
 
-    model.compile(optimizer="sgd", loss="categorical_crossentropy")
+    model.compile(optimizer="adadelta", loss="categorical_crossentropy")
 
     return model
 
@@ -71,5 +71,5 @@ def train():
         _INFO("x_train shape " + str(segments.shape))
         _INFO("y_train shape " + str(label.shape))
         model.fit(segments, label, epochs=1, verbose=2)
-    model.save(OUTPUT_PATH + "/fft_balance.h5")
+    model.save(OUTPUT_PATH + "/fft_balance_stage1.h5")
 
