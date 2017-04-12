@@ -45,17 +45,20 @@ def main():
     _INFO("Negative num: %s" % len(neg_list()))
     _INFO("Test num: %s" % len(test_list()))
 
-    cnn.train()
-    fft.train()
+    # cnn.train()
+    # fft.train()
 
-    # model = keras.models.load_model(OUTPUT_PATH + '/cnn_balance.h5')
-    # patients = test_list()
-    # _INFO("Found %s patients" % len(patients))
-    # for patient in patients:
-        # segments = pre.load_segment_by_patient(patient)
-        # segments = np.expand_dims(segments, axis=3)
-        # ret = model.predict_on_batch(segments)
-        # _INFO("Predict patient %s is %s" % (patient, np.mean(ret)))
+    model = keras.models.load_model(OUTPUT_PATH + '/cnn_balance_stage1.h5')
+    patients = test_list()
+    _INFO("Found %s patients" % len(patients))
+    for patient in patients:
+        segments = pre.load_segment_by_patient(patient)
+        segments = np.expand_dims(segments, axis=3)
+        ret = model.predict_on_batch(segments)
+        out_file = open(OUTPUT_PATH + '/cnn_predict_' + patient + '.csv', 'w')
+        for i in range(len(ret)):
+            out_file.write(str(i) + ',' + str(ret[i]) + '\n')
+        _INFO("Predict patient %s is %s" % (patient, np.mean(ret)))
 
     # for i in range(PROCESS_NUM):
     #     p = multiprocessing.Process(target=fre.multi_detect_with_mask, args=(patients[i::PROCESS_NUM],))
