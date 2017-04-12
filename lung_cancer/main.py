@@ -55,10 +55,12 @@ def main():
         segments = pre.load_segment_by_patient(patient)
         segments = np.expand_dims(segments, axis=3)
         ret = model.predict_on_batch(segments)
+        positive = []
         out_file = open(OUTPUT_PATH + '/cnn_predict_' + patient + '.csv', 'w')
         for i in range(len(ret)):
-            out_file.write(str(i) + ',' + str(ret[i]) + '\n')
-        _INFO("Predict patient %s is %s" % (patient, np.mean(ret)))
+            out_file.write(str(i) + ',' + str(ret[i][1]) + '\n')
+            positive.append(ret[i][1])
+        _INFO("Predict patient %s is %s" % (patient, np.mean(positive)))
 
     # for i in range(PROCESS_NUM):
     #     p = multiprocessing.Process(target=fre.multi_detect_with_mask, args=(patients[i::PROCESS_NUM],))
