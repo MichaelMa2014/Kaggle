@@ -1,0 +1,3 @@
+[submodule "doge"]
+	path = doge
+	url = git@github.com:MichaelMa2014/doge.git
