@@ -34,8 +34,8 @@ class DataHandler():
         self.ids = self.test_df.index.values
 
 
-    def save_submission(self, prob):
+    def save_submission(self, prob, name="submission"):
         id_df = pd.DataFrame({"Id": self.ids})
         prob_df = pd.DataFrame(prob, columns = self.indices_cat)
-        with open(os.path.join(OUTPUT_PATH, "submission.csv"), "w") as f:
-            id_df.join(prob_df).sort_index(axis=1).to_csv(f, index=False, compression="zip")
+        p = os.path.join(OUTPUT_PATH, "%s.csv.gz" % name)
+        id_df.join(prob_df).sort_index(axis=1).to_csv(p, index=False, compression="gzip")
