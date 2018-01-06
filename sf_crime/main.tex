@@ -79,6 +79,31 @@
 
 \section{模型简介}
 
+\subsection{逻辑回归}
+
+由于需要预测的变量是分类的，本文首先尝试了最简单的逻辑回归模型。
+Scikit Learn框架提供了Multinomial和One-versus-rest两种多分类回归模型，
+提供了liblinear和newton-cg等多种求解算法和L1，L2两种正则项。
+本文进行了多组对照实验对比其性能。
+
+\begin{table*}[h]
+    \centering
+    \begin{tabular}{*{7}{r}}
+        \hline
+        模型& 算法& 正则项& 训练集loss& 测试集loss \\
+        \hline
+        OvR& liblinear& L2& 2.655& 2.656& \\
+        OvR& liblinear& L1& & & \\
+        OvR& newton-cg& L2& 2.641& 2.642& \\
+        OvR& newton-cg& L1& & & \\
+        Multinomial& newton-cg& L2& & & \\
+        Multinomial& newton-cg& L1& & & \\
+        \hline
+    \end{tabular}
+    \caption{逻辑回归分组实验}
+    \label{tab:logsitic}
+\end{table*}
+
 \subsection{决策树}
 
 决策树是一种机器学习模型，
