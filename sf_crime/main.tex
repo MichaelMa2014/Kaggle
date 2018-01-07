@@ -82,9 +82,35 @@
 \subsection{逻辑回归}
 
 由于需要预测的变量是分类的，本文首先尝试了最简单的逻辑回归模型。
-Scikit Learn框架提供了Multinomial和One-versus-rest两种多分类回归模型，
+
+最基本的逻辑回归模型假设某一随机事件发生的对数几率是特征的线性函数。
+对数几率即随机事件发生的概率与不发生的概率之比的对数。
+
+\begin{equation}
+    \mathrm{log}\frac{P(Y=1|x)}{P(Y=0|x)}=w\cdot x
+\end{equation}
+
+学习逻辑回归模型的过程即估计模型参数$w$的过程，估计参数可以使用极大似然法。
+
+\begin{equation}
+    w=\operatornamewithlimits{argmax}_wP
+\end{equation}
+\begin{equation}
+    P=\prod_{i=1}^N \left( P(Y=1|x_i)^{y_i} P(Y=0|x_i)^{1-y_i} \right)
+\end{equation}
+
+对于结果有不止两种可能的随机事件，可以将以上逻辑回归模型推广到多分类，
+推广的方法有One-versus-Rest和Multinomial两种。
+One-versus-Rest认为出现第$1,2,...,K-1$种结果的概率与出现第$K$种结果的概率之比的对数是特征的线性函数。
+
+\begin{equation}
+    \mathrm{log}\frac{P(Y=k|x)}{P(Y=K|x)}=w_k\cdot x
+\end{equation}
+
+Scikit Learn框架提供了两种多分类回归模型，
 提供了liblinear和newton-cg等多种求解算法和L1，L2两种正则项。
-本文进行了多组对照实验对比其性能。
+本文进行了多组对照实验对比其性能，结果如表\ref{tab:logsitic}所示，
+各个模型、算法即正则项之间并无显著差别。
 
 \begin{table*}[h]
     \centering
@@ -93,11 +119,9 @@ Scikit Learn框架提供了Multinomial和One-versus-rest两种多分类回归模
         模型& 算法& 正则项& 训练集loss& 测试集loss \\
         \hline
         OvR& liblinear& L2& 2.655& 2.656& \\
-        OvR& liblinear& L1& & & \\
+        OvR& liblinear& L1& 2.662& 2.662& \\
         OvR& newton-cg& L2& 2.641& 2.642& \\
-        OvR& newton-cg& L1& & & \\
-        Multinomial& newton-cg& L2& & & \\
-        Multinomial& newton-cg& L1& & & \\
+        Multinomial& newton-cg& L2& 2.652& & \\
         \hline
     \end{tabular}
     \caption{逻辑回归分组实验}
